@@ -50,7 +50,7 @@ public class JwtFilter extends OncePerRequestFilter {
 
         // String token = accessTokenCookie.map(Cookie::getValue).orElse(null);
 
-        if (request.getServletPath().equals("/sign-up") || request.getServletPath().equals("/sign-in")||request.getServletPath().equals("/getAllUser")||request.getServletPath().equals("/del-cr7")||request.getServletPath().equals("/create-cr7")||request.getServletPath().equals("/ip-apai")) {
+        if (request.getServletPath().equals("/sign-up") || request.getServletPath().equals("/sign-in")||request.getServletPath().equals("/getAllUser")||request.getServletPath().equals("/del-cr7")||request.getServletPath().equals("/create-cr7")||request.getServletPath().equals("/ip-apai")||request.getServletPath().equals("/ip-apai-ip")) {
             filterChain.doFilter(request, response);
             return;
         }
