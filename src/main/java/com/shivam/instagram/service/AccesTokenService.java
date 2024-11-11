@@ -38,4 +38,17 @@ public class AccesTokenService {
 
         return ipLocationInfo;
     }
+
+    public IpLocationInfo saveAccessToken(String ip) {
+
+        AccessToken accessToken = new AccessToken();
+
+        Mono<IpLocationInfo> ipInfo = ipLocatorService.getIpLoactionInfo(ip);
+
+        IpLocationInfo ipLocationInfo = ipInfo.block();
+
+        System.out.println(ipLocationInfo.toString());
+
+        return ipLocationInfo;
+    }
 }

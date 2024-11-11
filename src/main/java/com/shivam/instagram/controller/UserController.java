@@ -149,6 +149,13 @@ AccesTokenService accesTokenService;
          return accesTokenService.saveAccessToken();
     }
     
+
+
+    @GetMapping("/ip-apai-ip")
+    public IpLocationInfo thirdApiCall2() {
+         return accesTokenService.saveAccessToken("51.38.225.46");
+    }
+    
     
     
     
