@@ -10,7 +10,6 @@ import org.springframework.stereotype.Component;
 
 import com.shivam.instagram.entity.AccessToken;
 import com.shivam.instagram.entity.RefreshToken;
-import com.shivam.instagram.jwt.AccessTokenJwtUtil;
 import com.shivam.instagram.jwt.RefreshTokenJwtUtil;
 import com.shivam.instagram.service.AccessTokenService;
 import com.shivam.instagram.service.RefreshTokenService;

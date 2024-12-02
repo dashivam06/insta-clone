@@ -9,7 +9,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 
 import com.shivam.instagram.service.AccessTokenService;
 import com.shivam.instagram.service.UserService;
-import com.shivam.instagram.dto.IpLocationInfo;
 import com.shivam.instagram.dto.ResponseBody;
 import com.shivam.instagram.entity.User;
 import com.shivam.instagram.jwt.AccessTokenJwtUtil;
@@ -24,7 +23,6 @@ import java.util.Optional;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
-import org.springframework.web.bind.annotation.RequestParam;
 
 
 

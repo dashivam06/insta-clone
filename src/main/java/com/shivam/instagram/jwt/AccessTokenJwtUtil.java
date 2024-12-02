@@ -14,7 +14,6 @@ import org.springframework.stereotype.Component;
 
 import com.shivam.instagram.entity.User;
 import com.shivam.instagram.repository.UserRepository;
-import com.shivam.instagram.service.UserService;
 import com.shivam.instagram.utils.Time;
 
 import io.jsonwebtoken.Claims;

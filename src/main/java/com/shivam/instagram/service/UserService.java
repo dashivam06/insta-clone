@@ -12,17 +12,12 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-
 import com.shivam.instagram.controller.UserWrapper;
 import com.shivam.instagram.dto.ResponseBody;
 import com.shivam.instagram.entity.User;
-import com.shivam.instagram.jwt.AccessTokenJwtUtil;
-import com.shivam.instagram.jwt.RefreshTokenJwtUtil;
 import com.shivam.instagram.repository.UserRepository;
 import com.shivam.instagram.utils.CookieHandler;
 import com.shivam.instagram.utils.Time;
-
-import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 @Service

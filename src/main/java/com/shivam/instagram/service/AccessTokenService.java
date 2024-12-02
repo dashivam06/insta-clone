@@ -5,15 +5,12 @@ import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
-
 import com.shivam.instagram.dto.IpLocationInfo;
 import com.shivam.instagram.entity.AccessToken;
 import com.shivam.instagram.jwt.AccessTokenJwtUtil;
 import com.shivam.instagram.repository.AccessTokenRepository;
 import com.shivam.instagram.utils.Time;
-
 import jakarta.servlet.http.HttpServletRequest;
-import lombok.Data;
 import nl.basjes.parse.useragent.UserAgent;
 import nl.basjes.parse.useragent.UserAgentAnalyzer;
 import reactor.core.publisher.Mono;
@@ -62,7 +59,7 @@ public class AccessTokenService {
 
         String token = generateToken(userKey);
 
-        AccessToken accessToken = new AccessToken(token, true, deviceName, ipLocationInfo.getIp(), ipLocationInfo.getCity(), ipLocationInfo.getCountryName(), accessTokenJwtUtil.extractUserId(token),Time.getGMT_Time("yyyy-MM-dd HH:mm:ss"));
+        AccessToken accessToken = new AccessToken(token, deviceName, ipLocationInfo.getIp(), ipLocationInfo.getCity(), ipLocationInfo.getCountryName(), accessTokenJwtUtil.extractUserId(token),Time.getGMT_Time("yyyy-MM-dd HH:mm:ss"));
 
         accessTokenRepository.save(accessToken);
 

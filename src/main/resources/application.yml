@@ -7,8 +7,6 @@ spring:
     username: ${DB_USERNAME}
     password: ${DB_PASSWORD}
 
-  
-    
 
 
 
