@@ -5,12 +5,15 @@ import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 
 import com.shivam.instagram.entity.AccessToken;
+import com.shivam.instagram.entity.RefreshToken;
 import com.shivam.instagram.jwt.AccessTokenJwtUtil;
 import com.shivam.instagram.jwt.RefreshTokenJwtUtil;
-import com.shivam.instagram.repository.AccessTokenRepository;
+import com.shivam.instagram.service.AccessTokenService;
+import com.shivam.instagram.service.RefreshTokenService;
 
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
@@ -21,11 +24,8 @@ import jakarta.servlet.http.HttpServletResponse;
 public class CookieHandler 
 {
 
-    @Autowired
-    AccessTokenJwtUtil accessTokenJwtUtil;
+   
 
-    @Autowired
-    RefreshTokenJwtUtil refreshTokenJwtUtil ;
 
     @Value("${myapp.instagram.cookie.access-token.expiration-time}")
     Integer accessTokenCookieExpTimeInSec ;
@@ -34,7 +34,14 @@ public class CookieHandler
     Integer refreshTokenCookieExpTimeInSec ;
 
     @Autowired
-    AccessTokenRepository  accessTokenRepository ;
+    @Lazy
+    AccessTokenService accessTokenService ;
+
+    @Autowired
+    RefreshTokenJwtUtil refreshTokenJwtUtil;
+
+    @Autowired
+    RefreshTokenService refreshTokenService ;
 
 
     public Optional<Cookie> getDesiredCookie(HttpServletRequest httpServletRequest , String cookieName)
@@ -95,10 +102,12 @@ public class CookieHandler
 
 
     public void setAccessTokenInCookie(HttpServletResponse httpServletResponse, String userKey, String domain,
-            String path, String sameSite) {
-        String accessJwtToken = accessTokenJwtUtil.generateToken(userKey);
+            String path, String sameSite) 
+    {
 
-        setDesiredCookie(httpServletResponse, "access_token", accessJwtToken, domain, path,
+        AccessToken accessJwtToken = accessTokenService.saveAccessToken(userKey);
+
+        setDesiredCookie(httpServletResponse, "access_token", accessJwtToken.getToken(), domain, path,
                 accessTokenCookieExpTimeInSec,
                 sameSite);
     }
@@ -107,14 +116,15 @@ public class CookieHandler
 
 
 
-
-
     public void setRefreshTokenInCookie(HttpServletResponse httpServletResponse, String userKey, String domain,
             String path,  String sameSite) {
-        String refreshJwtToken = refreshTokenJwtUtil.generateToken(userKey);
 
-        setDesiredCookie(httpServletResponse, "refresh_token", refreshJwtToken, null, "/",
+        RefreshToken refreshJwtToken = refreshTokenService.saveRefreshToken(userKey);
+
+        setDesiredCookie(httpServletResponse, "refresh_token", refreshJwtToken.getToken(), null, "/",
         refreshTokenCookieExpTimeInSec,"None");
+
+        System.out.println(refreshJwtToken);
     }
 
 

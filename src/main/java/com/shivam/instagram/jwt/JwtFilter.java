@@ -17,6 +17,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.shivam.instagram.dto.ResponseBody;
+import com.shivam.instagram.service.CustomUserDetailService;
 import com.shivam.instagram.utils.CookieHandler;
 
 import io.jsonwebtoken.ExpiredJwtException;
@@ -39,7 +40,7 @@ public class JwtFilter extends OncePerRequestFilter {
     RefreshTokenJwtUtil refreshTokenJwtUtil;
 
     @Autowired
-    UserDetailsService userDetailsService;
+    CustomUserDetailService userDetailsService;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
@@ -65,7 +66,7 @@ public class JwtFilter extends OncePerRequestFilter {
                         (SecurityContextHolder.getContext().getAuthentication() == null)) {
 
                     boolean isAccessTokenExpired = accessTokenJwtUtil.isTokenExpired(accessTokenValue);
-                    boolean isRefreshTokenExpired = accessTokenJwtUtil.isTokenExpired(refreshTokenValue);
+                    boolean isRefreshTokenExpired = refreshTokenJwtUtil.isTokenExpired(refreshTokenValue);
 
                     if (isAccessTokenExpired && !isRefreshTokenExpired) {
                         String userKey = refreshTokenJwtUtil.extractUsername(refreshTokenValue);

@@ -7,11 +7,8 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
-
-import com.shivam.instagram.controller.UserWrapper;
 import com.shivam.instagram.entity.User;
 
-import jakarta.servlet.http.HttpServletResponse;
 
 @Repository
 public interface UserRepository extends JpaRepository<User,Integer>
@@ -21,7 +18,7 @@ public interface UserRepository extends JpaRepository<User,Integer>
     Optional<User> findByUsernameOrEmail(@Param("login") String loginID);
 
     Optional<User> findByEmail(String email);
-
+ 
     Optional<User> findByUserName(String username);
 
     @Transactional

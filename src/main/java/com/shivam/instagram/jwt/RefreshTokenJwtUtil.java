@@ -15,6 +15,7 @@ import org.springframework.stereotype.Component;
 
 import com.shivam.instagram.entity.User;
 import com.shivam.instagram.repository.UserRepository;
+import com.shivam.instagram.service.UserService;
 import com.shivam.instagram.utils.Time;
 
 import io.jsonwebtoken.Claims;
@@ -33,8 +34,6 @@ public class RefreshTokenJwtUtil {
     @Value("${myapp.instagram.jwt.refresh-token.secretkey}")
     String SECRETKEY;
 
-    @Autowired
-    Time time;
 
     @Value("${myapp.instagram.jwt.refresh-token.expiration-time}")
     Integer expirationTime ;
@@ -46,17 +45,18 @@ public class RefreshTokenJwtUtil {
         HashMap<String, String> userClaims = new HashMap<>();
 
         optionalUser.ifPresent((user) -> {
-            userClaims.put("userId", String.valueOf(user.getUserId()));
+            userClaims.put("user_id", String.valueOf(user.getUserId()));
 
         });
 
         String token = Jwts.builder()
                 .claims(userClaims)
                 .subject(userKey)
-                .issuedAt(new Date(time.getGmtDateInMilliSec()))
-                .expiration(new Date(time.getGmtDateInMilliSec() + expirationTime))
+                .issuedAt(new Date(Time.getGmtDateInMilliSec()))
+                .expiration(new Date(Time.getGmtDateInMilliSec() + expirationTime))
                 .signWith(getSigningKey())
                 .compact();
+
 
         return token;
     }
@@ -121,7 +121,9 @@ public class RefreshTokenJwtUtil {
     public Integer extractUserId(String token) {
         
         try{
-            Integer userId = extractClaim(token, claim -> claim.get("user_id", Integer.class));
+            String userIdInString = extractClaim(token, claim -> claim.get("user_id", String.class));
+
+            Integer userId = Integer.parseInt(userIdInString);
 
             return userId;
 
@@ -162,5 +164,7 @@ public class RefreshTokenJwtUtil {
         }
         
     }
+
+
 
 }

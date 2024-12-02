@@ -7,8 +7,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.GetMapping;
 
-import com.shivam.instagram.service.AccesTokenService;
-import com.shivam.instagram.service.CustomUserDetailService;
+import com.shivam.instagram.service.AccessTokenService;
 import com.shivam.instagram.service.UserService;
 import com.shivam.instagram.dto.IpLocationInfo;
 import com.shivam.instagram.dto.ResponseBody;
@@ -16,7 +15,6 @@ import com.shivam.instagram.entity.User;
 import com.shivam.instagram.jwt.AccessTokenJwtUtil;
 import com.shivam.instagram.repository.UserRepository;
 import com.shivam.instagram.utils.CookieHandler;
-import com.shivam.instagram.utils.Time;
 
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
@@ -39,12 +37,7 @@ public class UserController
 {
 
 
-    @Autowired
-    Time timeUtils = new Time();
 
-
-    @Autowired 
-    CustomUserDetailService userDetailService ;
 
 
     @Autowired
@@ -142,19 +135,20 @@ public class UserController
     }
 
 @Autowired
-AccesTokenService accesTokenService;
+AccessTokenService accessTokenService;
 
-    @GetMapping("/ip-apai")
-    public IpLocationInfo thirdApiCall() {
-         return accesTokenService.saveAccessToken();
-    }
+    // @GetMapping("/ip-apai")
+    // public IpLocationInfo thirdApiCall() 
+    // {
+    //     cookieHandler.setAccessTokenInCookie(null, null, null, null, null);
+    // }
     
 
 
-    @GetMapping("/ip-apai-ip")
-    public IpLocationInfo thirdApiCall2() {
-         return accesTokenService.saveAccessToken("51.38.225.46");
-    }
+    // @GetMapping("/ip-apai-ip")
+    // public IpLocationInfo thirdApiCall2() {
+    //      return accesTokenService.saveAccessToken("51.38.225.46");
+    // }
     
     
     

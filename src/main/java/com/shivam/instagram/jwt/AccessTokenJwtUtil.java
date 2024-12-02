@@ -14,6 +14,7 @@ import org.springframework.stereotype.Component;
 
 import com.shivam.instagram.entity.User;
 import com.shivam.instagram.repository.UserRepository;
+import com.shivam.instagram.service.UserService;
 import com.shivam.instagram.utils.Time;
 
 import io.jsonwebtoken.Claims;
@@ -26,17 +27,16 @@ import io.jsonwebtoken.security.SignatureException;
 @Component
 public class AccessTokenJwtUtil {
 
-    @Autowired
-    UserRepository userRepository;
 
     @Value("${myapp.instagram.jwt.access-token.secretkey}")
     String SECRETKEY;
 
-    @Autowired
-    Time time;
 
     @Value("${myapp.instagram.jwt.access-token.expiration-time}")
     Integer expirationTime;
+
+    @Autowired
+    UserRepository userRepository;
 
     public String generateToken(String userKey) {
 
@@ -45,7 +45,7 @@ public class AccessTokenJwtUtil {
         HashMap<String, String> userClaims = new HashMap<>();
 
         optionalUser.ifPresent((user) -> {
-            userClaims.put("sub", String.valueOf(user.getUserId()));
+            userClaims.put("user_id", String.valueOf(user.getUserId()));
             userClaims.put("fullname", user.getFullName());
             userClaims.put("email", user.getEmail());
         });
@@ -53,8 +53,8 @@ public class AccessTokenJwtUtil {
         String token = Jwts.builder()
                 .claims(userClaims)
                 .subject(userKey)
-                .issuedAt(new Date(time.getGmtDateInMilliSec()))
-                .expiration(new Date(time.getGmtDateInMilliSec() + expirationTime))
+                .issuedAt(new Date(Time.getGmtDateInMilliSec()))
+                .expiration(new Date(Time.getGmtDateInMilliSec() + expirationTime))
                 .signWith(getSigningKey())
                 .compact();
 
@@ -123,6 +123,22 @@ public class AccessTokenJwtUtil {
             String email = extractClaim(token, claim -> claim.get("email", String.class));
 
             return email;
+
+        } catch (Exception e) {
+            throw new IllegalArgumentException(e);
+        }
+
+    }
+
+
+    public Integer extractUserId(String token) {
+
+        try {
+            String userIdInString = extractClaim(token, claim -> claim.get("user_id", String.class));
+
+            Integer userId = Integer.parseInt(userIdInString);
+
+            return userId;
 
         } catch (Exception e) {
             throw new IllegalArgumentException(e);

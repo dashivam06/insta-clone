@@ -1,7 +1,9 @@
 package com.shivam.instagram.service;
 
+import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -10,8 +12,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.context.request.ServletRequestAttributes;
+
 
 import com.shivam.instagram.controller.UserWrapper;
 import com.shivam.instagram.dto.ResponseBody;
@@ -32,24 +33,14 @@ public class UserService {
     UserRepository userRepository;
 
     @Autowired
-    Time time;
-
-    @Autowired
-    CustomUserDetailService userDetailService;
-
-    @Autowired
     AuthenticationManager authenticationManager;
 
     @Autowired
     PasswordEncoder passwordEncoder;
 
-    @Autowired
-    AccessTokenJwtUtil accessTokenJwtUtil;
 
     @Autowired
-    RefreshTokenJwtUtil refreshTokenJwtUtil;
-
-    @Autowired
+    @Lazy
     CookieHandler cookieHandler;
 
   
@@ -59,11 +50,12 @@ public class UserService {
         User user = new User(userWrapper.getUserName(), userWrapper.getFullName(), userWrapper.getEmail(),
                 passwordEncoder.encode(userWrapper.getPassword()), userWrapper.getProfilePic(),
                 userWrapper.getIsEmailVerified(), userWrapper.getDateOfBirth(),
-                time.getGMT_Time("yyyy-MM-dd HH:mm:ss"));
+                Time.getGMT_Time("yyyy-MM-dd HH:mm:ss"));
 
         /*
          * Get the ip address from the request body and then process it and save it in the db  
          */
+        userRepository.save(user);
         
       
 
@@ -72,7 +64,7 @@ public class UserService {
         cookieHandler.setRefreshTokenInCookie(httpServletResponse, userWrapper.getUserName(), null, "/",
                 "None");
 
-        return userRepository.save(user);
+        return user;
     }
 
 
@@ -98,10 +90,10 @@ public class UserService {
 
                 SecurityContextHolder.getContext().setAuthentication(authentication);
 
-                cookieHandler.setAccessTokenInCookie(httpServletResponse, userKey, null, "/",
-                        "None");
-                cookieHandler.setRefreshTokenInCookie(httpServletResponse, userKey, null, "/",
-                        "None");
+                // cookieHandler.setAccessTokenInCookie(httpServletResponse, userKey, null, "/",
+                //         "None");
+                // cookieHandler.setRefreshTokenInCookie(httpServletResponse, userKey, null, "/",
+                //         "None");
 
                 return new ResponseBody(true, 200, authentication.getPrincipal(), "Login successful", "/login");
             }
@@ -119,6 +111,19 @@ public class UserService {
 
         return responseBody;
 
+    }
+
+
+
+
+
+
+
+
+
+    public Optional<User> findByUsernameOrEmail(String userKey) {
+
+        return userRepository.findByUsernameOrEmail(userKey);
     }
 
 }

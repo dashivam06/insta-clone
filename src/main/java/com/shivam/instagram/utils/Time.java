@@ -7,11 +7,12 @@ import java.util.TimeZone;
 
 import org.springframework.stereotype.Component;
 
+import jakarta.persistence.Converter;
 
-@Component
+
 public class Time 
 {
-     public String getGMT_Time(String format)
+     public static String getGMT_Time(String format)
     {
         SimpleDateFormat sdf = new SimpleDateFormat(format);
 
@@ -25,7 +26,7 @@ public class Time
     }
 
 
-    public long getGmtDateInMilliSec()
+    public static long getGmtDateInMilliSec()
     {
 
         long milliSec = Instant.now().toEpochMilli();
