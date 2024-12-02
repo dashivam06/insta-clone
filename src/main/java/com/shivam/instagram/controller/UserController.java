@@ -79,9 +79,9 @@ public class UserController
     public ResponseBody signUp(@RequestBody UserWrapper userWrapper, HttpServletResponse httpServletResponse) 
     {
         
-        User user = userService.saveUser(userWrapper,httpServletResponse);
+        ResponseBody userResponseBody = userService.saveUser(userWrapper,httpServletResponse);
 
-        return new ResponseBody(true, 200, user, "User creation successful", "/sign-up");
+        return userResponseBody;
     }
     
 

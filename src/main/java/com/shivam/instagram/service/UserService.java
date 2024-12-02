@@ -13,7 +13,6 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-
 import com.shivam.instagram.controller.UserWrapper;
 import com.shivam.instagram.dto.ResponseBody;
 import com.shivam.instagram.entity.User;
@@ -38,43 +37,34 @@ public class UserService {
     @Autowired
     PasswordEncoder passwordEncoder;
 
-
     @Autowired
     @Lazy
     CookieHandler cookieHandler;
 
-  
+    public ResponseBody saveUser(UserWrapper userWrapper, HttpServletResponse httpServletResponse) {
 
-    public User saveUser(UserWrapper userWrapper, HttpServletResponse httpServletResponse) {
+        Optional<User> optionalUser = userRepository.findByUserName(userWrapper.getUserName());
 
-        User user = new User(userWrapper.getUserName(), userWrapper.getFullName(), userWrapper.getEmail(),
-                passwordEncoder.encode(userWrapper.getPassword()), userWrapper.getProfilePic(),
-                userWrapper.getIsEmailVerified(), userWrapper.getDateOfBirth(),
-                Time.getGMT_Time("yyyy-MM-dd HH:mm:ss"));
+        if (optionalUser.isEmpty()) {
+            User user = new User(userWrapper.getUserName(), userWrapper.getFullName(), userWrapper.getEmail(),
+                    passwordEncoder.encode(userWrapper.getPassword()), userWrapper.getProfilePic(),
+                    userWrapper.getIsEmailVerified(), userWrapper.getDateOfBirth(),
+                    Time.getGMT_Time("yyyy-MM-dd HH:mm:ss"));
 
-        /*
-         * Get the ip address from the request body and then process it and save it in the db  
-         */
-        userRepository.save(user);
+            userRepository.save(user);
+
+            cookieHandler.setAccessTokenInCookie(httpServletResponse, userWrapper.getUserName(), null, "/",
+                    "None");
+            cookieHandler.setRefreshTokenInCookie(httpServletResponse, userWrapper.getUserName(), null, "/",
+                    "None");
+
+            return new ResponseBody(true, 200, user, "User successfully created.", "/sign-up");
+        }
+
+        return new ResponseBody(true, 409, null, "User with the specified username already exists.", "/sign-up");
         
-      
-
-        cookieHandler.setAccessTokenInCookie(httpServletResponse, userWrapper.getUserName(), null, "/",
-                "None");
-        cookieHandler.setRefreshTokenInCookie(httpServletResponse, userWrapper.getUserName(), null, "/",
-                "None");
-
-        return user;
     }
 
-
-
-
-
-
-
-
-    
     public ResponseBody authenticate(HttpServletResponse httpServletResponse, String userKey, String password) {
 
         ResponseBody responseBody = new ResponseBody();
@@ -87,13 +77,13 @@ public class UserService {
 
             if (authentication.isAuthenticated()) {
 
-
                 SecurityContextHolder.getContext().setAuthentication(authentication);
 
                 // cookieHandler.setAccessTokenInCookie(httpServletResponse, userKey, null, "/",
-                //         "None");
-                // cookieHandler.setRefreshTokenInCookie(httpServletResponse, userKey, null, "/",
-                //         "None");
+                // "None");
+                // cookieHandler.setRefreshTokenInCookie(httpServletResponse, userKey, null,
+                // "/",
+                // "None");
 
                 return new ResponseBody(true, 200, authentication.getPrincipal(), "Login successful", "/login");
             }
@@ -103,7 +93,7 @@ public class UserService {
             responseBody.setMessage("Invalid password");
             responseBody.setStatus(401);
         } catch (Exception e) {
-            System.out.println("Exception at : UserService.class "+ "\nException  :  "+e);
+            System.out.println("Exception at : UserService.class " + "\nException  :  " + e);
             responseBody.setSuccess(false);
             responseBody.setMessage("Login failed");
             responseBody.setStatus(500);
@@ -112,14 +102,6 @@ public class UserService {
         return responseBody;
 
     }
-
-
-
-
-
-
-
-
 
     public Optional<User> findByUsernameOrEmail(String userKey) {
 

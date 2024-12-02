@@ -48,6 +48,8 @@ public class AccessTokenService {
 
         IpLocationInfo ipLocationInfo = ipInfo.block();
 
+        System.out.println(ipLocationInfo);
+
          // Get the User-Agent
          String userAgentString = request.getHeader("User-Agent");
 

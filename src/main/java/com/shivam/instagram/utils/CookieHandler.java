@@ -108,8 +108,7 @@ public class CookieHandler
         AccessToken accessJwtToken = accessTokenService.saveAccessToken(userKey);
 
         setDesiredCookie(httpServletResponse, "access_token", accessJwtToken.getToken(), domain, path,
-                accessTokenCookieExpTimeInSec,
-                sameSite);
+                accessTokenCookieExpTimeInSec, sameSite);
     }
 
 
@@ -124,7 +123,6 @@ public class CookieHandler
         setDesiredCookie(httpServletResponse, "refresh_token", refreshJwtToken.getToken(), null, "/",
         refreshTokenCookieExpTimeInSec,"None");
 
-        System.out.println(refreshJwtToken);
     }
 
 
